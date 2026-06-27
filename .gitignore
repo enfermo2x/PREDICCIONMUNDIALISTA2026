@@ -1,0 +1,23 @@
+# Python cache and environment
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+ENV/
+env/
+
+# Data outputs and generated files
+salida/
+procesados/
+*.pkl
+*.xlsx
+*.png
+*.jpg
+*.jpeg
+*.pdf
+*.log
+
+# Editor directories
+.vscode/
+.idea/
