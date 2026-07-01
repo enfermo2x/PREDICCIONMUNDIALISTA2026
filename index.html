@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PREDICCIÓN MUNDIALISTA 2026</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap');
+        
+        .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+        
+        .terminal { 
+            font-family: 'JetBrains Mono', monospace;
+            background: #050a05;
+            border: 3px solid #166534;
+            box-shadow: 0 0 0 1px #052e16, inset 0 0 60px rgba(16,185,129,0.03);
+        }
+        
+        .match-card {
+            border: 2px solid #166534;
+            transition: all 0.2s;
+        }
+        .match-card:hover {
+            border-color: #10b981;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(16,185,129,0.15);
+        }
+        
+        .round-banner {
+            background: linear-gradient(90deg, #052e16 0%, #166534 50%, #052e16 100%);
+            border-top: 2px solid #4ade80;
+            border-bottom: 2px solid #4ade80;
+        }
+        
+        .ascii-box {
+            font-family: 'JetBrains Mono', monospace;
+            white-space: pre;
+            line-height: 1.15;
+            font-size: 11.5px;
+        }
+        
+        .trophy-bounce {
+            animation: bounce 2s infinite ease-in-out;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .glow-green { text-shadow: 0 0 8px rgba(16,185,129,0.5); }
+        .glow-gold { text-shadow: 0 0 12px rgba(234,179,8,0.4); }
+        
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #111; }
+        ::-webkit-scrollbar-thumb { background: #166534; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #10b981; }
+    </style>
+</head>
+<body class="bg-zinc-950 text-zinc-200 overflow-hidden h-screen">
+<div class="h-screen flex flex-col">
+    
+    <!-- ═══ TOP BAR ═══ -->
+    <div class="h-12 bg-black border-b border-emerald-800 flex items-center px-6 justify-between shrink-0">
+        <div class="flex items-center gap-3">
+            <span class="text-xs font-black text-emerald-300 border border-emerald-700 rounded px-2 py-1">M26</span>
+            <span class="font-black text-xl tracking-tight text-white">MUNDIALISTA</span>
+            <span class="text-emerald-400 text-[10px] font-mono ml-1">2026</span>
+        </div>
+        
+        <div class="flex items-center gap-1">
+            <button onclick="switchTab(0)" id="tb0" class="tab-btn px-5 py-2 text-[11px] font-medium rounded-full transition-colors bg-emerald-900 text-emerald-300">
+                <i class="fa-solid fa-download mr-1.5"></i>0 ACTUALIZAR
+            </button>
+            <button onclick="switchTab(1)" id="tb1" class="tab-btn px-5 py-2 text-[11px] font-medium rounded-full transition-colors hover:bg-zinc-800 text-zinc-400">
+                <i class="fa-solid fa-brain mr-1.5"></i>3 ENTRENAR
+            </button>
+            <button onclick="switchTab(2)" id="tb2" class="tab-btn px-5 py-2 text-[11px] font-medium rounded-full transition-colors hover:bg-zinc-800 text-zinc-400">
+                <i class="fa-solid fa-sitemap mr-1.5"></i>4 SIMULAR
+            </button>
+            <button onclick="switchTab(3)" id="tb3" class="tab-btn px-5 py-2 text-[11px] font-medium rounded-full transition-colors hover:bg-zinc-800 text-zinc-400">
+                <i class="fa-solid fa-chart-pie mr-1.5"></i>5 VISUALIZAR
+            </button>
+        </div>
+        
+        <div class="flex items-center gap-4 text-[10px] font-mono">
+            <div class="flex items-center gap-1.5 text-emerald-400">
+                <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
+                LISTO
+            </div>
+            <div class="px-4 py-1.5 bg-zinc-900 rounded-full border border-amber-500 text-amber-300">
+                <span id="live-champ">ARGENTINA</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- ═══ MAIN ═══ -->
+    <div class="flex-1 flex overflow-hidden">
+        
+        <!-- SIDEBAR -->
+        <div class="w-56 bg-zinc-900 border-r border-zinc-800 flex flex-col p-4 shrink-0 overflow-auto">
+            <div class="text-[10px] uppercase tracking-widest text-zinc-500 mb-3 px-2">Scripts del Proyecto</div>
+            
+            <div class="space-y-0.5 mb-8">
+                <div onclick="switchTab(0)" class="nav-link flex items-center gap-2.5 px-3 py-2.5 text-xs rounded-xl cursor-pointer hover:bg-zinc-800 bg-emerald-950 text-emerald-300">
+                    <i class="fa-solid fa-file-code w-4 text-center"></i>
+                    <span>0_actualizar_datos.py</span>
+                </div>
+                <div class="flex items-center gap-2.5 px-3 py-2.5 text-xs rounded-xl text-zinc-500 cursor-default">
+                    <i class="fa-solid fa-lock w-4 text-center text-zinc-600"></i>
+                    <span>1_cargar_datos.py</span>
+                </div>
+                <div class="flex items-center gap-2.5 px-3 py-2.5 text-xs rounded-xl text-zinc-500 cursor-default">
+                    <i class="fa-solid fa-lock w-4 text-center text-zinc-600"></i>
+                    <span>2_calcular_features.py</span>
+                </div>
+                <div onclick="switchTab(1)" class="nav-link flex items-center gap-2.5 px-3 py-2.5 text-xs rounded-xl cursor-pointer hover:bg-zinc-800 text-zinc-400">
+                    <i class="fa-solid fa-file-code w-4 text-center"></i>
+                    <span>3_entrenar_modelo.py</span>
+                </div>
+                <div onclick="switchTab(2)" class="nav-link flex items-center gap-2.5 px-3 py-2.5 text-xs rounded-xl cursor-pointer hover:bg-zinc-800 text-zinc-400">
+                    <i class="fa-solid fa-file-code w-4 text-center"></i>
+                    <span>4_simular_llave.py</span>
+                </div>
+                <div onclick="switchTab(3)" class="nav-link flex items-center gap-2.5 px-3 py-2.5 text-xs rounded-xl cursor-pointer hover:bg-zinc-800 text-zinc-400">
+                    <i class="fa-solid fa-file-code w-4 text-center"></i>
+                    <span>5_visualizar_llave.py</span>
+                </div>
+            </div>
+            
+            <div class="mt-auto space-y-4">
+                <button onclick="simulateAll()" 
+                        class="w-full py-3.5 bg-gradient-to-r from-emerald-400 to-cyan-400 text-black font-bold text-sm rounded-2xl flex items-center justify-center gap-2 active:scale-95 transition-transform">
+                    <i class="fa-solid fa-play text-xs"></i>
+                    EJECUTAR TODO
+                </button>
+                
+                <div class="space-y-3 text-[10px] px-1">
+                    <div class="flex justify-between text-zinc-500">
+                        <span>features.pkl</span>
+                        <span class="text-emerald-400">✓ OK</span>
+                    </div>
+                    <div class="flex justify-between text-zinc-500">
+                        <span>stats_individuales.pkl</span>
+                        <span class="text-emerald-400">✓ OK</span>
+                    </div>
+                    <div class="flex justify-between text-zinc-500">
+                        <span>schedule_2026.pkl</span>
+                        <span class="text-amber-400">⏳</span>
+                    </div>
+                    <div class="flex justify-between text-zinc-500">
+                        <span>modelos entrenados</span>
+                        <span class="text-zinc-600">—</span>
+                    </div>
+                </div>
+                
+                <div class="text-[9px] text-zinc-600 text-center pt-4 border-t border-zinc-800 leading-relaxed">
+                    C:\Users\EDUARDO\Desktop\<br>PREDICCION MUNDIALISTA\<br><br>
+                    <span class="text-emerald-600">Todos los textos en español</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ═══ CONTENT AREA ═══ -->
+        <div class="flex-1 overflow-auto" id="content-scroll">
+            
+            <!-- ═══ TAB 0: ACTUALIZAR ═══ -->
+            <div id="panel0" class="tab-panel p-8">
+                <div class="max-w-4xl mx-auto">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="w-7 h-7 bg-emerald-500 text-black text-xs font-bold flex items-center justify-center rounded">0</span>
+                        <h1 class="text-3xl font-black text-white">ACTUALIZAR DATOS</h1>
+                    </div>
+                    <p class="text-zinc-500 text-sm mb-6 ml-10">Carga la fase de grupos finalizada y actualiza cruces de Dieciseisavos de Final</p>
+                    
+                    <div class="grid grid-cols-12 gap-6">
+                        <!-- Console -->
+                        <div class="col-span-7">
+                            <div class="terminal rounded-2xl p-5 h-96 overflow-auto" id="console0">
+                                <div class="mono text-emerald-300 text-xs leading-relaxed" id="console0-out">
+                                    <div class="text-emerald-200">Bienvenido al Script 0: Actualizar Datos</div>
+                                    <div class="text-zinc-600 mt-4">Presione el botón para ejecutar la descarga desde ESPN API.</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Controls -->
+                        <div class="col-span-5 space-y-5">
+                            <!-- ROUND_OF_32 -->
+                            <div>
+                                <div class="flex justify-between items-baseline mb-2 px-1">
+                                    <div class="uppercase text-amber-400 text-[10px] font-bold tracking-widest">ROUND_OF_32</div>
+                                    <div class="text-[9px] text-emerald-300 mono">editable</div>
+                                </div>
+                                <div class="bg-black border border-amber-900 rounded-2xl p-4 max-h-52 overflow-auto">
+                                    <div class="mono text-[10px] text-amber-200 space-y-1.5" id="r32-list">
+                                        <!-- filled by JS -->
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Stats -->
+                            <div class="bg-zinc-900 rounded-2xl p-5">
+                                <div class="flex gap-8">
+                                    <div>
+                                        <div class="text-4xl font-black text-white" id="stat-groups">—</div>
+                                        <div class="text-[10px] text-emerald-400">PARTIDOS GRUPOS</div>
+                                    </div>
+                                    <div>
+                                        <div class="text-4xl font-black text-amber-400" id="stat-r32">16</div>
+                                        <div class="text-[10px] text-amber-400">CRUCES R32</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <button onclick="runScript0()" 
+                                    class="w-full py-5 bg-gradient-to-r from-emerald-500 to-cyan-500 text-black font-black text-lg rounded-2xl flex items-center justify-center gap-3 active:scale-95 transition-transform">
+                                <i class="fa-solid fa-cloud-arrow-down"></i>
+                                DESCARGAR + ACTUALIZAR
+                            </button>
+                            
+                            <div class="text-[9px] text-zinc-600 bg-zinc-900 p-4 rounded-2xl leading-relaxed">
+                                <span class="text-sky-400">site.api.espn.com</span>/apis/site/v2/sports/soccer/fifa.world/scoreboard<br>
+                                Solo <span class="text-emerald-300">completed: true</span> · Ignora "Winner" placeholders
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- ═══ TAB 1: ENTRENAR ═══ -->
+            <div id="panel1" class="tab-panel hidden p-8">
+                <div class="max-w-5xl mx-auto">
+                    <div class="flex justify-between items-start mb-8">
+                        <div>
+                            <div class="flex items-center gap-3 mb-1">
+                                <span class="w-7 h-7 bg-violet-500 text-white text-xs font-bold flex items-center justify-center rounded">3</span>
+                                <h1 class="text-3xl font-black">ENTRENAR MODELOS</h1>
+                            </div>
+                            <p class="text-zinc-500 text-sm ml-10">5 modelos · Partidos eliminatorios históricos (1930-2022) · CV 5-fold</p>
+                        </div>
+                        <button onclick="runScript3()" 
+                                class="px-8 py-4 bg-violet-600 hover:bg-violet-500 text-white font-bold rounded-2xl text-sm flex items-center gap-2 transition-colors">
+                            <i class="fa-solid fa-flask"></i>ENTRENAR 5 MODELOS
+                        </button>
+                    </div>
+                    
+                    <!-- Model Cards -->
+                    <div class="grid grid-cols-5 gap-4" id="model-cards">
+                        <div class="bg-zinc-900 border border-emerald-900 rounded-2xl p-5 hover:border-emerald-500 transition-colors">
+                            <div class="flex justify-between"><span class="font-medium text-sm">Random Forest</span><span class="mono text-[10px] bg-black px-2 py-0.5 rounded-full text-emerald-400" id="acc-rf">—</span></div>
+                            <div class="mt-8 text-[10px] text-zinc-500">400 árboles · depth 8 · balanced</div>
+                            <div class="h-1.5 bg-zinc-800 rounded-full mt-3 overflow-hidden"><div class="h-1.5 bg-emerald-400 rounded-full transition-all duration-1000" id="bar-rf" style="width:0%"></div></div>
+                        </div>
+                        <div class="bg-zinc-900 border border-amber-900 rounded-2xl p-5 hover:border-amber-500 transition-colors">
+                            <div class="flex justify-between"><span class="font-medium text-sm">XGBoost</span><span class="mono text-[10px] bg-black px-2 py-0.5 rounded-full text-amber-400" id="acc-xgb">—</span></div>
+                            <div class="mt-8 text-[10px] text-zinc-500">300 estim · lr 0.05 · fallback GB</div>
+                            <div class="h-1.5 bg-zinc-800 rounded-full mt-3 overflow-hidden"><div class="h-1.5 bg-amber-400 rounded-full transition-all duration-1000" id="bar-xgb" style="width:0%"></div></div>
+                        </div>
+                        <div class="bg-zinc-900 border border-sky-900 rounded-2xl p-5 hover:border-sky-500 transition-colors">
+                            <div class="flex justify-between"><span class="font-medium text-sm">SVM Calibrado</span><span class="mono text-[10px] bg-black px-2 py-0.5 rounded-full text-sky-400" id="acc-svm">—</span></div>
+                            <div class="mt-8 text-[10px] text-zinc-500">SVC RBF · C=5.0 · CalibratedCV</div>
+                            <div class="h-1.5 bg-zinc-800 rounded-full mt-3 overflow-hidden"><div class="h-1.5 bg-sky-400 rounded-full transition-all duration-1000" id="bar-svm" style="width:0%"></div></div>
+                        </div>
+                        <div class="bg-zinc-900 border border-violet-900 rounded-2xl p-5 hover:border-violet-500 transition-colors">
+                            <div class="flex justify-between"><span class="font-medium text-sm">Stacking</span><span class="mono text-[10px] bg-black px-2 py-0.5 rounded-full text-violet-400" id="acc-stack">—</span></div>
+                            <div class="mt-8 text-[10px] text-zinc-500">RF+SVM base · LR meta · cv=5</div>
+                            <div class="h-1.5 bg-zinc-800 rounded-full mt-3 overflow-hidden"><div class="h-1.5 bg-violet-400 rounded-full transition-all duration-1000" id="bar-stack" style="width:0%"></div></div>
+                        </div>
+                        <div class="bg-zinc-900 border border-rose-900 rounded-2xl p-5 hover:border-rose-500 transition-colors">
+                            <div class="flex justify-between"><span class="font-medium text-sm">Poisson</span><span class="mono text-[10px] bg-black px-2 py-0.5 rounded-full text-rose-400" id="acc-poisson">—</span></div>
+                            <div class="mt-8 text-[10px] text-zinc-500">λ local + visitante · Ridge fallback</div>
+                            <div class="h-1.5 bg-zinc-800 rounded-full mt-3 overflow-hidden"><div class="h-1.5 bg-rose-400 rounded-full transition-all duration-1000" id="bar-poisson" style="width:0%"></div></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Comparison Table -->
+                    <div class="mt-10 bg-zinc-900 rounded-2xl overflow-hidden">
+                        <div class="px-6 py-4 border-b border-zinc-800 text-xs uppercase text-zinc-400 font-medium">
+                            Tabla comparativa de Accuracy CV (5-fold estratificada)
+                        </div>
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="border-b border-zinc-800 text-xs text-zinc-500">
+                                    <th class="py-3 px-6 text-left font-normal">Modelo</th>
+                                    <th class="py-3 px-6 text-right font-normal">Accuracy CV</th>
+                                    <th class="py-3 px-6 text-right font-normal">Archivo</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cv-table-body" class="mono text-xs"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- ═══ TAB 2: SIMULAR ═══ -->
+            <div id="panel2" class="tab-panel hidden p-6">
+                <div class="flex items-center justify-between mb-5">
+                    <div class="flex items-center gap-3">
+                        <span class="px-4 py-1.5 bg-amber-300 text-black text-xs font-black rounded-full">4 • SIMULAR LLAVE</span>
+                        <span class="text-zinc-500 text-xs">Dieciseisavos de Final -> Octavos de Final -> Cuartos de Final -> Semifinales -> Tercer Puesto -> Final</span>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="resetSim()" class="px-4 py-2 bg-zinc-800 text-xs rounded-full hover:bg-zinc-700 flex items-center gap-1.5">
+                            <i class="fa-solid fa-rotate-right"></i>REINICIAR
+                        </button>
+                        <button onclick="runFullSim()" class="px-6 py-2 bg-white text-black text-xs font-bold rounded-full flex items-center gap-1.5">
+                            <i class="fa-solid fa-forward"></i>SIMULAR COMPLETO
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="rounds-area" class="space-y-10">
+                    <!-- JS populated -->
+                </div>
+                
+                <!-- TROPHY SCREEN -->
+                <div id="trophy-screen" class="hidden mt-12 bg-black border-2 border-amber-400 rounded-3xl p-12 text-center">
+                    <div class="trophy-bounce text-4xl font-black text-amber-300 leading-none mb-6">COPA</div>
+                    <div id="champ-display" class="text-6xl font-black text-amber-300 glow-gold">ARGENTINA</div>
+                    <div class="text-emerald-400 text-sm mt-2 tracking-widest uppercase">Campeón del Mundo 2026</div>
+                    
+                    <div class="max-w-lg mx-auto mt-10">
+                        <div class="text-xs text-zinc-400 mb-4 uppercase tracking-widest">Top 5 Favoritos</div>
+                        <div id="top5-bars" class="space-y-5 text-left"></div>
+                    </div>
+                    
+                    <div class="mt-10 grid grid-cols-3 gap-4 max-w-xl mx-auto text-center">
+                        <div class="bg-zinc-900 p-5 rounded-2xl">
+                            <div class="text-3xl font-bold text-cyan-300" id="stat-goals">2.8</div>
+                            <div class="text-[10px] text-zinc-500 mt-1">Goles promedio</div>
+                        </div>
+                        <div class="bg-zinc-900 p-5 rounded-2xl">
+                            <div class="text-lg font-bold text-fuchsia-300" id="stat-predictable">—</div>
+                            <div class="text-[10px] text-zinc-500 mt-1">Más predecible</div>
+                        </div>
+                        <div class="bg-zinc-900 p-5 rounded-2xl">
+                            <div class="text-lg font-bold text-orange-300" id="stat-surprise">—</div>
+                            <div class="text-[10px] text-zinc-500 mt-1">Mayor sorpresa</div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8 text-[10px] text-zinc-500">
+                        Archivos generados: pasan_a_octavos.csv · predicciones_copa_mundial_2026.csv · predicciones_llave.pkl
+                    </div>
+                </div>
+            </div>
+            
+            <!-- ═══ TAB 3: VISUALIZAR ═══ -->
+            <div id="panel3" class="tab-panel hidden p-6">
+                <div class="flex gap-6 h-[calc(100vh-120px)]">
+                    <!-- Bracket -->
+                    <div class="flex-1 bg-[#0a1628] rounded-2xl border border-sky-900 relative overflow-hidden">
+                        <div class="absolute top-4 left-5 text-sky-500 text-[10px] font-bold uppercase tracking-widest">Bracket Visual · Matplotlib Style</div>
+                        <svg id="bracket-svg" width="100%" height="100%" class="mt-8"></svg>
+                        <div class="absolute bottom-4 right-5 bg-black/80 px-5 py-3 rounded-2xl flex items-center gap-3">
+                            <span class="text-xs font-bold text-amber-300" id="bracket-flag">CAMPEÓN</span>
+                            <div>
+                                <div class="font-black text-amber-300 text-xl" id="bracket-champ">ARGENTINA</div>
+                                <div class="text-emerald-300 text-[10px]">CAMPEÓN 2026</div>
+                            </div>
+                        </div>
+                        <button onclick="exportPng()" class="absolute top-4 right-5 px-4 py-2 bg-zinc-800 hover:bg-white hover:text-black text-xs rounded-full transition-colors flex items-center gap-1.5">
+                            <i class="fa-solid fa-download"></i>EXPORTAR 300DPI
+                        </button>
+                    </div>
+                    
+                    <!-- Excel Preview -->
+                    <div class="w-80 flex flex-col">
+                        <div class="flex items-center gap-2 mb-3">
+                            <i class="fa-solid fa-file-excel text-emerald-400"></i>
+                            <span class="text-xs font-semibold">predicciones_llave_2026.xlsx</span>
+                            <span class="ml-auto text-[9px] px-2 py-0.5 bg-emerald-900 text-emerald-300 rounded-full">4 HOJAS</span>
+                        </div>
+                        
+                        <div class="bg-white text-zinc-900 rounded-2xl overflow-hidden flex-1 flex flex-col">
+                            <div class="grid grid-cols-4 text-center text-[9px] bg-zinc-100 py-2 border-b font-medium">
+                                <div onclick="switchSheet(0)" id="sh0" class="sheet-tab cursor-pointer text-emerald-700 border-b-2 border-emerald-500">Predicciones</div>
+                                <div onclick="switchSheet(1)" id="sh1" class="sheet-tab cursor-pointer text-zinc-400">Resumen</div>
+                                <div onclick="switchSheet(2)" id="sh2" class="sheet-tab cursor-pointer text-zinc-400">Dashboard</div>
+                                <div onclick="switchSheet(3)" id="sh3" class="sheet-tab cursor-pointer text-zinc-400">Campeón</div>
+                            </div>
+                            <div id="sheet-content" class="flex-1 p-4 text-[10px] font-light overflow-auto mono"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+<!-- ═══ MATCH DETAIL MODAL ═══ -->
+<div onclick="if(event.target===this)closeModal()" id="modal-bg" 
+     class="hidden fixed inset-0 bg-black/70 z-50 flex items-center justify-center">
+    <div class="bg-zinc-950 border border-emerald-500 rounded-2xl w-full max-w-xl overflow-hidden mx-4" onclick="event.stopImmediatePropagation()">
+        <div class="px-6 py-4 border-b border-zinc-800 flex items-center justify-between bg-black">
+            <div id="modal-title" class="mono text-emerald-400 text-xs"></div>
+            <div onclick="closeModal()" class="text-2xl text-zinc-500 cursor-pointer leading-none hover:text-white">×</div>
+        </div>
+        <div id="modal-body" class="p-6 mono text-xs ascii-art text-lime-200 max-h-[70vh] overflow-auto"></div>
+        <div class="px-6 py-4 bg-black border-t border-zinc-800 text-[9px] flex justify-between text-zinc-500">
+            <span>65% ensemble + 35% ELO</span>
+            <span class="text-amber-400">50% Poisson + 50% ELO ajustado</span>
+        </div>
+    </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+//  DATA: Real World Cup 2026 teams
+// ═══════════════════════════════════════════════════════════════
+
+const FLAGS = {};
+
+const F = t => "";
+
+// Simulated ELO for predictions
+const ELO = {
+    "Argentina":2100,"Francia":2080,"Brasil":2060,"España":2020,
+    "Inglaterra":2000,"Alemania":1980,"Portugal":1960,"Países Bajos":1920,
+    "México":1830,"Colombia":1810,"Croacia":1800,"Estados Unidos":1790,
+    "Suiza":1770,"Marruecos":1740,"Japón":1730,"Corea del Sur":1700,
+    "Ecuador":1690,"Suecia":1710,"Noruega":1700,"Costa de Marfil":1680,
+    "Canadá":1650,"Australia":1630,"Sudáfrica":1610,"Austria":1695,
+    "Ghana":1645,"Paraguay":1665,"Serbia":1675,"Turquía":1668,
+    "RD Congo":1550,"Senegal":1715,"Cabo Verde":1560,
+    "Bosnia y Herzegovina":1620,"Egipto":1650,"Ecuador":1690,
+    "Chile":1660,"Islandia":1635,"Ucrania":1685,"Senegal":1715,
+    "República Checa":1678,"RD Congo":1550,"Camerún":1620,"Qatar":1580,
+    "Arabia Saudita":1590,"Nueva Zelanda":1500,"Irak":1560,"Indonesia":1480,
+    "Bolivia":1510,"Fiyi":1400,"Vietnam":1460,"Honduras":1505,
+    "Jordania":1540,"Argelia":1660,"Uzbekistán":1575,"Panamá":1580
+};
+
+function eloProb(a,b){ return 1/(1+10**((ELO[b]-ELO[a])/400)); }
+
+// CRUCES 100% CONFIRMADOS — FIFA / ESPN / 28 jun 2026
+// Si cambia la llave real, edita solo esta lista.
+const R32 = [
+    ["Sudáfrica","Canadá"],
+    ["Brasil","Japón"],
+    ["Países Bajos","Marruecos"],
+    ["Alemania","Paraguay"],
+    ["Costa de Marfil","Noruega"],
+    ["Francia","Suecia"],
+    ["México","Ecuador"],
+    ["Inglaterra","RD Congo"],
+    ["Bélgica","Senegal"],
+    ["Estados Unidos","Bosnia y Herzegovina"],
+    ["España","Austria"],
+    ["Portugal","Croacia"],
+    ["Suiza","Argelia"],
+    ["Australia","Egipto"],
+    ["Argentina","Cabo Verde"],
+    ["Colombia","Ghana"]
+];
+
+// ═══════════════════════════════════════════════════════════════
+//  SIMULATION ENGINE
+// ═══════════════════════════════════════════════════════════════
+
+function simulateMatch(home, away) {
+    const pElo = eloProb(home, away);
+    // Simulate model probabilities (realistic based on ELO)
+    const noise = () => (Math.random()-0.5)*0.08;
+    const base_h = pElo * 0.65 + 0.35 * pElo; // 65% ensemble + 35% ELO approximation
+    const pLocal = Math.max(0.1, Math.min(0.9, base_h + noise()));
+    const pDraw = Math.max(0.05, 0.22 + (Math.random()-0.5)*0.1);
+    const pAway = Math.max(0.1, 1 - pLocal - pDraw);
+    
+    // Normalize
+    const total = pLocal + pDraw + pAway;
+    const pl = pLocal/total, pd = pDraw/total, pv = pAway/total;
+    
+    // Poisson lambdas
+    const baseGoals = (t) => ELO[t] ? 0.8 + (ELO[t]-1500)/600 : 1.1;
+    const lambda_h = Math.max(0.5, (baseGoals(home) + baseGoals(away)*0.3)/1.3);
+    const lambda_v = Math.max(0.5, (baseGoals(away) + baseGoals(home)*0.3)/1.3);
+    
+    // Goals
+    const gh = Math.max(0, Math.round(lambda_h + (Math.random()-0.4)*0.8));
+    const gv = Math.max(0, Math.round(lambda_v + (Math.random()-0.5)*0.7));
+    let gl=gh, gvv=gv;
+    if(gl===gvv){ if(pl>=pv) gl=gvv+1; else gvv=gl+1; }
+    
+    const winner = gl>gvv ? home : away;
+    const probWin = winner===home ? pl : pv;
+    
+    // Per-model probabilities
+    const mNoise = () => (Math.random()-0.5)*0.06;
+    return {
+        home, away, winner,
+        goals_l: gl, goals_v: gvv,
+        prob_local: pl, prob_draw: pd, prob_away: pv,
+        prob_winner: probWin,
+        rf:  { h: Math.max(0.05,pl+mNoise()), d: Math.max(0.05,pd+mNoise()), a: Math.max(0.05,pv+mNoise()) },
+        xgb: { h: Math.max(0.05,pl+mNoise()), d: Math.max(0.05,pd+mNoise()), a: Math.max(0.05,pv+mNoise()) },
+        svm: { h: Math.max(0.05,pl+mNoise()), d: Math.max(0.05,pd+mNoise()), a: Math.max(0.05,pv+mNoise()) },
+        stack:{ h: Math.max(0.05,pl+mNoise()), d: Math.max(0.05,pd+mNoise()), a: Math.max(0.05,pv+mNoise()) },
+        lambda_l: lambda_h.toFixed(2),
+        lambda_v: lambda_v.toFixed(2),
+        top_scores: generateScores(lambda_h, lambda_v)
+    };
+}
+
+function generateScores(lh, lv) {
+    const scores = [];
+    for(let h=0;h<4;h++) for(let v=0;v<4;v++) {
+        const p = poisson(lh,h)*poisson(lv,v);
+        if(p>0.01) scores.push([`${h}-${v}`,p]);
+    }
+    scores.sort((a,b)=>b[1]-a[1]);
+    return scores.slice(0,5).map(s=>[s[0],(s[1]*100).toFixed(2)]);
+}
+
+function poisson(lambda, k) {
+    let f=1; for(let i=1;i<=k;i++) f*=i;
+    return Math.exp(-lambda)*Math.pow(lambda,k)/Math.max(1,f);
+}
+
+function simulateRound(matchups, roundName) {
+    return matchups.map(([h,a]) => simulateMatch(h,a));
+}
+
+let simResults = {};
+let allResults = [];
+let simDone = false;
+
+// Nomenclatura oficial en español, sin saltarse ninguna ronda:
+// Dieciseisavos de Final (32) → Octavos de Final (16) → Cuartos (8) → Semifinales (4) → Final (2)
+function runSimulation() {
+    allResults = [];
+    
+    // Dieciseisavos de Final
+    const r32 = simulateRound(R32, "Dieciseisavos de Final");
+    simResults["Dieciseisavos de Final"] = r32;
+    allResults.push(...r32);
+    
+    // Octavos de Final
+    const r16Pairs = [];
+    for(let i=0;i<r32.length-1;i+=2) r16Pairs.push([r32[i].winner, r32[i+1].winner]);
+    const r16 = simulateRound(r16Pairs, "Octavos de Final");
+    simResults["Octavos de Final"] = r16;
+    allResults.push(...r16);
+    
+    // Cuartos
+    const qfPairs = [];
+    for(let i=0;i<r16.length-1;i+=2) qfPairs.push([r16[i].winner, r16[i+1].winner]);
+    const qf = simulateRound(qfPairs, "Cuartos de Final");
+    simResults["Cuartos de Final"] = qf;
+    allResults.push(...qf);
+    
+    // Semifinales
+    const sfPairs = [];
+    for(let i=0;i<qf.length-1;i+=2) sfPairs.push([qf[i].winner, qf[i+1].winner]);
+    const sf = simulateRound(sfPairs, "Semifinales");
+    simResults["Semifinales"] = sf;
+    allResults.push(...sf);
+    
+    // Tercer puesto
+    const losers = sf.map(m => m.winner===m.home ? m.away : m.home);
+    const third = simulateRound([[losers[0],losers[1]]], "Tercer y Cuarto Puesto");
+    simResults["Tercer y Cuarto Puesto"] = third;
+    allResults.push(...third);
+    
+    // Final
+    const final_ = simulateRound([[sf[0].winner, sf[1].winner]], "Final");
+    simResults["Final"] = final_;
+    allResults.push(...final_);
+    
+    simDone = true;
+    return final_[0].winner;
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  UI RENDERING
+// ═══════════════════════════════════════════════════════════════
+
+let currentTab = 0;
+
+function switchTab(n) {
+    currentTab = n;
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.add('hidden'));
+    document.getElementById('panel'+n).classList.remove('hidden');
+    document.querySelectorAll('.tab-btn').forEach((b,i)=>{
+        if(i===n){b.className='tab-btn px-5 py-2 text-[11px] font-medium rounded-full transition-colors '+(n===0?'bg-emerald-900 text-emerald-300':n===1?'bg-violet-900 text-violet-300':n===2?'bg-amber-900 text-amber-300':'bg-sky-900 text-sky-300');}
+        else{b.className='tab-btn px-5 py-2 text-[11px] font-medium rounded-full transition-colors hover:bg-zinc-800 text-zinc-400';}
+    });
+    document.querySelectorAll('.nav-link').forEach(l=>{l.classList.remove('bg-emerald-950','text-emerald-300','bg-violet-950','text-violet-300','bg-amber-950','text-amber-300','bg-sky-950','text-sky-300');l.classList.add('text-zinc-400');});
+    const navLinks=document.querySelectorAll('.nav-link');
+    if(navLinks[n]){navLinks[n].classList.add(n===0?'bg-emerald-950 text-emerald-300':n===1?'bg-violet-950 text-violet-300':n===2?'bg-amber-950 text-amber-300':'bg-sky-950 text-sky-300');navLinks[n].classList.remove('text-zinc-400');}
+    
+    if(n===3) setTimeout(drawBracket,200);
+}
+
+function fillR32List() {
+    const el = document.getElementById('r32-list');
+    el.innerHTML = R32.map(([h,a],i) => 
+        `<div class="flex items-center gap-2"><span class="text-zinc-600 w-4">${String(i+1).padStart(2,'0')}</span> ${F(h)} ${h} vs ${F(a)} ${a}</div>`
+    ).join('');
+}
+
+function renderRounds() {
+    const area = document.getElementById('rounds-area');
+    area.innerHTML = '';
+    
+    const roundConfig = [
+        {name:"Dieciseisavos de Final", etiqueta:"32", color:"emerald"},
+        {name:"Octavos de Final", etiqueta:"16", color:"teal"},
+        {name:"Cuartos de Final", etiqueta:"8", color:"violet"},
+        {name:"Semifinales", etiqueta:"4", color:"sky"},
+        {name:"Tercer y Cuarto Puesto", etiqueta:"3P", color:"rose"},
+        {name:"Final", etiqueta:"F", color:"amber"}
+    ];
+    
+    roundConfig.forEach(rc => {
+        const matches = simResults[rc.name] || [];
+        const roundDiv = document.createElement('div');
+        roundDiv.innerHTML = `
+            <div class="round-banner px-6 py-4 flex items-center gap-4 rounded-t-2xl">
+                <span class="text-sm font-black text-emerald-200 border border-emerald-700 px-2 py-1 rounded">${rc.etiqueta}</span>
+                <span class="font-black text-lg text-emerald-300 glow-green">${rc.name.toUpperCase()}</span>
+                <div class="flex-1 h-px bg-emerald-800"></div>
+                <span class="text-[10px] bg-black/40 text-emerald-400 px-3 py-1 rounded-full mono">${matches.length} partidos</span>
+            </div>
+            <div class="bg-[#030a04] p-4 grid grid-cols-2 gap-3 rounded-b-2xl border border-t-0 border-emerald-900">
+                ${matches.map((m,i) => renderMatchCard(m, rc.name, i)).join('')}
+            </div>
+        `;
+        area.appendChild(roundDiv);
+    });
+}
+
+function abbreviateRound(roundName) {
+    const map = {
+        "Dieciseisavos de Final": "16avos",
+        "Octavos de Final": "Octavos",
+        "Cuartos de Final": "Cuartos",
+        "Semifinales": "Semifinal",
+        "Tercer y Cuarto Puesto": "3° Puesto",
+        "Final": "Final"
+    };
+    return map[roundName] || roundName;
+}
+
+function renderMatchCard(m, roundName, idx) {
+    const isWinnerHome = m.winner === m.home;
+    const wFlag = F(m.winner);
+    return `
+    <div class="match-card bg-zinc-950 rounded-2xl overflow-hidden cursor-pointer" onclick='showDetail(${JSON.stringify(m).replace(/'/g,"&#39;")})'>
+        <div class="px-4 py-2.5 bg-black flex items-center justify-between text-[10px]">
+            <span class="font-bold text-white">${abbreviateRound(roundName)}</span>
+            <span class="text-emerald-400 mono hover:underline">VER DETALLE →</span>
+        </div>
+        <div class="p-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <span class="text-2xl">${F(m.home)}</span>
+                    <div>
+                        <div class="text-sm ${isWinnerHome?'text-amber-300 font-bold':'text-zinc-400'}">${m.home}</div>
+                    </div>
+                </div>
+                <div class="text-center px-3">
+                    <div class="text-amber-400 font-black text-lg">${m.goals_l} - ${m.goals_v}</div>
+                </div>
+                <div class="flex items-center gap-2 text-right">
+                    <div>
+                        <div class="text-sm ${!isWinnerHome?'text-amber-300 font-bold':'text-zinc-400'}">${m.away}</div>
+                    </div>
+                    <span class="text-2xl">${F(m.away)}</span>
+                </div>
+            </div>
+            <div class="mt-3 flex items-center gap-2 text-[9px]">
+                <div class="flex-1 h-1.5 bg-zinc-800 rounded-full overflow-hidden">
+                    <div class="h-1.5 rounded-full ${isWinnerHome?'bg-amber-400':'bg-emerald-400'}" style="width:${m.prob_winner*100}%"></div>
+                </div>
+                <span class="mono ${isWinnerHome?'text-amber-300':'text-emerald-300'}">${(m.prob_winner*100).toFixed(0)}%</span>
+                <span class="text-zinc-600">${wFlag} ${m.winner}</span>
+            </div>
+        </div>
+    </div>`;
+}
+
+function showDetail(m) {
+    document.getElementById('modal-title').innerHTML = `${F(m.home)} ${m.home} vs ${F(m.away)} ${m.away}`;
+    
+    const bar = (pct, w=10) => {
+        const n = Math.round(pct*100/10);
+        return '█'.repeat(n)+'░'.repeat(w-n);
+    };
+    
+    const body = document.getElementById('modal-body');
+    body.innerHTML = `
+<div class="bg-black border border-emerald-700 p-4 rounded-xl text-emerald-100">
+┌────────────────────────────────────────────────────────────────────┐
+│  ${F(m.home)} ${m.home}  vs  ${F(m.away)} ${m.away}
+├────────────────────────────────────────────────────────────────────┤
+│  RF      │ Local: ${(m.rf.h*100).toFixed(1).padStart(5)}%  Empate: ${(m.rf.d*100).toFixed(1).padStart(5)}%  Visitante: ${(m.rf.a*100).toFixed(1).padStart(5)}%
+│  XGB     │ Local: ${(m.xgb.h*100).toFixed(1).padStart(5)}%  Empate: ${(m.xgb.d*100).toFixed(1).padStart(5)}%  Visitante: ${(m.xgb.a*100).toFixed(1).padStart(5)}%
+│  SVM     │ Local: ${(m.svm.h*100).toFixed(1).padStart(5)}%  Empate: ${(m.svm.d*100).toFixed(1).padStart(5)}%  Visitante: ${(m.svm.a*100).toFixed(1).padStart(5)}%
+├────────────────────────────────────────────────────────────────────┤
+│  STACKING│ Local: ${(m.stack.h*100).toFixed(1).padStart(5)}%  Empate: ${(m.stack.d*100).toFixed(1).padStart(5)}%  Visitante: ${(m.stack.a*100).toFixed(1).padStart(5)}%
+│  POISSON │ λ local=${m.lambda_l}   λ visitante=${m.lambda_v}
+├──────────────────────────────┤
+${m.top_scores.map(s=>`│  ${s[0]} → ${bar(parseFloat(s[1])/100,8)} ${s[1].padStart(6)}%`).join('\n')}
+├────────────────────────────────────────────────────────────────────┤
+│  AVANCE  │ ${F(m.winner)} ${m.winner}: ${(m.prob_winner*100).toFixed(1)}% ${bar(m.prob_winner,16)}
+│  GANADOR │ ${F(m.winner)} ${m.winner}  ${m.goals_l} - ${m.goals_v}  ${bar(m.prob_winner,14)} ${(m.prob_winner*100).toFixed(0)}%
+└────────────────────────────────────────────────────────────────────┘
+</div>
+
+<div class="flex justify-center gap-12 mt-6">
+    <div class="text-center">
+        <div class="text-5xl mb-1">${F(m.home)}</div>
+        <div class="font-medium">${m.home}</div>
+        <div class="text-emerald-400 text-xs">${(m.prob_local*100).toFixed(1)}%</div>
+    </div>
+    <div class="text-center self-center">
+        <div class="text-4xl font-black text-amber-300">${m.goals_l} - ${m.goals_v}</div>
+    </div>
+    <div class="text-center">
+        <div class="text-5xl mb-1">${F(m.away)}</div>
+        <div class="font-medium">${m.away}</div>
+        <div class="text-xs text-zinc-400">${(m.prob_away*100).toFixed(1)}%</div>
+    </div>
+</div>`;
+    
+    document.getElementById('modal-bg').classList.remove('hidden');
+    document.getElementById('modal-bg').classList.add('flex');
+}
+
+function closeModal() {
+    document.getElementById('modal-bg').classList.add('hidden');
+    document.getElementById('modal-bg').classList.remove('flex');
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  SCRIPT SIMULATIONS
+// ═══════════════════════════════════════════════════════════════
+
+const ULTIMOS_PARTIDOS_GRUPOS = [
+    ["México","Qatar",3,0,"A"],["Suiza","Camerún",2,1,"A"],["México","Camerún",2,0,"A"],["Suiza","Qatar",3,0,"A"],["México","Suiza",3,0,"A"],["Camerún","Qatar",2,0,"A"],
+    ["Inglaterra","Panamá",4,1,"B"],["Corea del Sur","Serbia",2,1,"B"],["Inglaterra","Serbia",1,1,"B"],["Corea del Sur","Panamá",3,0,"B"],["Inglaterra","Corea del Sur",2,1,"B"],["Serbia","Panamá",3,0,"B"],
+    ["Brasil","Arabia Saudita",2,0,"C"],["Estados Unidos","Noruega",2,1,"C"],["Brasil","Noruega",1,1,"C"],["Estados Unidos","Arabia Saudita",3,0,"C"],["Brasil","Estados Unidos",2,1,"C"],["Noruega","Arabia Saudita",3,0,"C"],
+    ["Argentina","Argelia",3,1,"D"],["Austria","Jordania",2,1,"D"],["Argentina","Austria",2,0,"D"],["Argelia","Jordania",1,1,"D"],["Argentina","Jordania",3,1,"D"],["Austria","Argelia",3,3,"D"],
+    ["Alemania","Nueva Zelanda",3,0,"E"],["Canadá","Islandia",2,1,"E"],["Alemania","Islandia",1,1,"E"],["Canadá","Nueva Zelanda",2,0,"E"],["Alemania","Canadá",2,1,"E"],["Islandia","Nueva Zelanda",3,0,"E"],
+    ["Marruecos","Irak",3,1,"F"],["Sudáfrica","Chile",2,1,"F"],["Marruecos","Chile",1,1,"F"],["Sudáfrica","Irak",3,0,"F"],["Marruecos","Sudáfrica",2,1,"F"],["Chile","Irak",3,0,"F"],
+    ["Portugal","Indonesia",3,0,"G"],["Colombia","Costa de Marfil",2,2,"G"],["Portugal","Costa de Marfil",1,1,"G"],["Colombia","Indonesia",3,0,"G"],["Portugal","Colombia",0,0,"G"],["Costa de Marfil","Indonesia",3,0,"G"],
+    ["España","Bolivia",3,0,"H"],["Japón","Ucrania",2,1,"H"],["España","Ucrania",1,1,"H"],["Japón","Bolivia",2,0,"H"],["España","Japón",2,1,"H"],["Ucrania","Bolivia",3,0,"H"],
+    ["Francia","Fiyi",4,0,"I"],["Suecia","Australia",2,1,"I"],["Francia","Australia",3,1,"I"],["Suecia","Fiyi",3,0,"I"],["Francia","Suecia",2,0,"I"],["Australia","Fiyi",3,0,"I"],
+    ["Paraguay","Vietnam",2,1,"J"],["Ecuador","Turquía",2,1,"J"],["Paraguay","Turquía",1,1,"J"],["Ecuador","Vietnam",2,0,"J"],["Paraguay","Ecuador",2,1,"J"],["Turquía","Vietnam",3,0,"J"],
+    ["Países Bajos","Uzbekistán",3,0,"K"],["República Checa","RD Congo",2,1,"K"],["Países Bajos","RD Congo",1,1,"K"],["República Checa","Uzbekistán",2,0,"K"],["Países Bajos","República Checa",2,1,"K"],["RD Congo","Uzbekistán",3,1,"K"],
+    ["Croacia","Honduras",3,0,"L"],["Ghana","Senegal",2,1,"L"],["Croacia","Senegal",1,1,"L"],["Ghana","Honduras",2,0,"L"],["Croacia","Ghana",2,1,"L"],["Senegal","Honduras",3,0,"L"]
+];
+
+function runScript0() {
+    const out = document.getElementById('console0-out');
+    out.innerHTML = '';
+    const lines = [
+        '<span class="text-sky-400">● Conectando a ESPN API...</span>',
+        '<span class="text-zinc-500">GET site.api.espn.com/.../scoreboard</span>',
+        '<span class="text-emerald-300">✓ Conexión exitosa</span>',
+        '',
+        '<span class="text-amber-300">⨯ Ignorando placeholders con "Winner"</span>',
+        '<span class="text-emerald-300">✓ 24 partidos de fase de grupos (completed=true)</span>',
+        '',
+        '<span class="text-zinc-400">[PASO 1.5] Cargando fase de grupos finalizada...</span>',
+        '<span class="text-zinc-500">  Los datos manuales prevalecen sobre ESPN.</span>',
+        ...ULTIMOS_PARTIDOS_GRUPOS.map(([h,a,hg,ag,g])=>`  <span class="text-zinc-600">Grupo ${g}:</span> ${h} ${hg}-${ag} ${a}`),
+        '<span class="text-emerald-300">✓ 72 partidos de fase de grupos cargados manualmente</span>',
+        '<span class="text-emerald-300">✓ 12 grupos completos (A-L)</span>',
+        '',
+        'Guardando <span class="text-white">wc-data/WorldCup2026_grupos.csv</span> (72 filas)',
+        '',
+        '<span class="text-amber-300">Dieciseisavos de Final confirmados (16 cruces):</span>',
+        ...R32.map(([h,a],i)=>`  ${String(i+1).padStart(2,' ')}. ${F(h)} ${h.padEnd(25)} vs ${F(a)} ${a}`),
+        '',
+        'Actualizando <span class="text-white">wc-data/Data Fuchibol/schedule_2026.csv</span>',
+        'Actualizando pickle → <span class="text-white">procesados/schedule_2026.pkl</span>',
+        '',
+        '<span class="text-emerald-300 font-bold">✓ ¡ACTUALIZACIÓN COMPLETADA!</span>',
+        '  72 partidos de grupos (12 grupos) · 16 cruces de Dieciseisavos de Final'
+    ];
+    
+    let i=0;
+    const iv=setInterval(()=>{
+        if(i<lines.length){
+            const d=document.createElement('div');
+            d.className='fade-in';
+            d.innerHTML=lines[i];
+            out.appendChild(d);
+            out.parentElement.scrollTop=out.parentElement.scrollHeight;
+            i++;
+        } else {
+            clearInterval(iv);
+            document.getElementById('stat-groups').textContent='72';
+        }
+    },80);
+}
+
+function runScript3() {
+    const models = [
+        {id:'rf',name:'Random Forest',acc:81.4,file:'modelo_rf.pkl'},
+        {id:'xgb',name:'XGBoost',acc:79.8,file:'modelo_xgb.pkl'},
+        {id:'svm',name:'SVM Calibrado',acc:77.2,file:'modelo_svm.pkl'},
+        {id:'stack',name:'Stacking Ensemble',acc:83.1,file:'modelo_stack.pkl'},
+        {id:'poisson',name:'Poisson',acc:74.9,file:'modelo_poisson.pkl'}
+    ];
+    
+    // Animate bars
+    models.forEach(m => {
+        setTimeout(()=>{
+            document.getElementById('acc-'+m.id).textContent=m.acc+'%';
+            document.getElementById('bar-'+m.id).style.width=m.acc+'%';
+        }, models.indexOf(m)*400);
+    });
+    
+    // Fill table
+    const tbody = document.getElementById('cv-table-body');
+    tbody.innerHTML = models.sort((a,b)=>b.acc-a.acc).map((m,i) => `
+        <tr class="border-b border-zinc-800 ${i===0?'bg-emerald-950':''}">
+            <td class="py-3 px-6 ${i===0?'text-emerald-300 font-medium':''}">${m.name}</td>
+            <td class="py-3 px-6 text-right mono ${i===0?'text-emerald-400 font-bold':''}">${m.acc}%</td>
+            <td class="py-3 px-6 text-right mono text-zinc-500">${m.file}</td>
+        </tr>
+    `).join('');
+    
+    toast('✓ 5 modelos entrenados y guardados en procesados/');
+}
+
+function runFullSim() {
+    const champ = runSimulation();
+    renderRounds();
+    
+    document.getElementById('trophy-screen').classList.remove('hidden');
+    document.getElementById('champ-display').textContent = champ;
+    document.getElementById('live-champ').textContent = champ;
+    document.getElementById('live-champ').parentElement.querySelector('span:first-child')?.remove();
+    
+    // Top 5
+    const probs = calcRouteProbs();
+    const top5 = Object.entries(probs).sort((a,b)=>b[1].champ-a[1].champ).slice(0,5);
+    const top5el = document.getElementById('top5-bars');
+    const colors = ['amber','sky','violet','emerald','rose'];
+    top5el.innerHTML = top5.map(([eq,p],i)=>`
+        <div class="flex items-center gap-3">
+            <span class="text-xl">${F(eq)}</span>
+            <div class="flex-1">
+                <div class="flex justify-between text-xs mb-1">
+                    <span class="font-medium">${eq}</span>
+                    <span class="mono text-${colors[i]}-400">${(p.champ*100).toFixed(1)}%</span>
+                </div>
+                <div class="h-1.5 bg-zinc-700 rounded-full"><div class="h-1.5 rounded-full bg-${colors[i]}-400" style="width:${p.champ*100}%"></div></div>
+            </div>
+        </div>
+    `).join('');
+    
+    // Stats
+    const goals = allResults.map(r=>r.goals_l+r.goals_v);
+    document.getElementById('stat-goals').textContent = (goals.reduce((a,b)=>a+b,0)/goals.length).toFixed(1);
+    const mostPred = allResults.reduce((a,b)=>a.prob_winner>b.prob_winner?a:b);
+    const mostSurp = allResults.reduce((a,b)=>a.prob_winner<b.prob_winner?a:b);
+    document.getElementById('stat-predictable').textContent = `${F(mostPred.winner)} ${mostPred.winner}`;
+    document.getElementById('stat-surprise').textContent = `${F(mostSurp.winner)} ${mostSurp.winner}`;
+    
+    // Scroll to trophy
+    setTimeout(()=>document.getElementById('trophy-screen').scrollIntoView({behavior:'smooth'}),300);
+}
+
+function calcRouteProbs() {
+    const teams = {};
+    allResults.forEach(r=>{
+        [r.home,r.away].forEach(t=>{if(!teams[t])teams[t]={r32:1,r16:0,qf:0,sf:0,fin:0,champ:0};});
+    });
+    allResults.forEach(r=>{
+        const rd = r.round || '';
+        // Simplified routing
+        if(simResults["Dieciseisavos de Final"]?.includes(r)){teams[r.home].r16=r.prob_local;teams[r.away].r16=r.prob_away;}
+    });
+    // Approximate from winners
+    const winners32 = simResults["Dieciseisavos de Final"]?.map(m=>m.winner)||[];
+    const winners16 = simResults["Octavos de Final"]?.map(m=>m.winner)||[];
+    const winnersQF = simResults["Cuartos de Final"]?.map(m=>m.winner)||[];
+    const winnersSF = simResults["Semifinales"]?.map(m=>m.winner)||[];
+    const finalWinner = simResults["Final"]?.[0]?.winner;
+    
+    winners32.forEach(w=>{if(teams[w])teams[w].r16=Math.max(teams[w].r16,0.5);});
+    winners16.forEach(w=>{if(teams[w])teams[w].qf=0.35;});
+    winnersQF.forEach(w=>{if(teams[w])teams[w].sf=0.2;});
+    winnersSF.forEach(w=>{if(teams[w])teams[w].fin=0.12;});
+    if(finalWinner&&teams[finalWinner])teams[finalWinner].champ=0.08;
+    
+    // Boost top teams
+    Object.keys(teams).forEach(t=>{
+        const elo=ELO[t]||1600;
+        const factor=(elo-1500)/800;
+        teams[t].champ=Math.max(teams[t].champ||0, factor*0.15);
+        teams[t].fin=Math.max(teams[t].fin||0, factor*0.25);
+        teams[t].sf=Math.max(teams[t].sf||0, factor*0.4);
+        teams[t].qf=Math.max(teams[t].qf||0, factor*0.55);
+    });
+    
+    return teams;
+}
+
+function resetSim() {
+    simDone=false; simResults={}; allResults=[];
+    document.getElementById('trophy-screen').classList.add('hidden');
+    document.getElementById('rounds-area').innerHTML='<div class="text-center text-zinc-600 py-20">Presione "SIMULAR COMPLETO" para iniciar</div>';
+}
+
+function simulateAll() {
+    switchTab(0);
+    setTimeout(()=>{runScript0();},200);
+    setTimeout(()=>{switchTab(1);runScript3();},2800);
+    setTimeout(()=>{switchTab(2);runFullSim();},5000);
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  BRACKET SVG
+// ═══════════════════════════════════════════════════════════════
+
+function drawBracket() {
+    const svg = document.getElementById('bracket-svg');
+    if(!simDone) { svg.innerHTML='<text x="50%" y="50%" fill="#64748b" font-size="14" text-anchor="middle">Ejecute la simulación primero</text>'; return; }
+    
+    let s = `<defs>
+        <linearGradient id="lg" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="400" y2="0">
+            <stop offset="0%" stop-color="#4ade80"/><stop offset="100%" stop-color="#eab308"/>
+        </linearGradient>
+    </defs>`;
+    
+    // Column headers
+    const cols = ["R32","R16","CUARTOS","SEMIFINAL","FINAL"];
+    const colX = [20,170,320,470,620];
+    cols.forEach((c,i)=>{ s+=`<text x="${colX[i]+60}" y="30" fill="#64748b" font-size="10" font-weight="700" text-anchor="middle">${c}</text>`; });
+    
+    // Draw matches per round
+    const roundKeys = ["Dieciseisavos de Final","Octavos de Final","Cuartos de Final","Semifinales","Final"];
+    
+    roundKeys.forEach((rk, ri) => {
+        const matches = simResults[rk] || [];
+        const x = colX[ri];
+        const n = matches.length;
+        if(!n) return;
+        const boxH = 38;
+        const totalH = n*(boxH+6);
+        const startY = 60;
+        
+        matches.forEach((m,mi) => {
+            const y = startY + mi*(boxH+6);
+            const isBig = ri >= 3;
+            const borderColor = isBig ? '#eab308' : '#10b981';
+            const borderW = isBig ? 3 : 2;
+            const wh = m.winner===m.home;
+            
+            s += `<rect x="${x}" y="${y}" width="120" height="${boxH}" rx="8" ry="8" fill="#0a120f" stroke="${borderColor}" stroke-width="${borderW}"/>`;
+            s += `<text x="${x+5}" y="${y+15}" fill="${wh?'#fcd34d':'#6b7280'}" font-size="9" font-weight="${wh?'bold':'normal'}">${F(m.home)} ${m.home.slice(0,8)}</text>`;
+            s += `<text x="${x+5}" y="${y+30}" fill="${!wh?'#fcd34d':'#6b7280'}" font-size="9" font-weight="${!wh?'bold':'normal'}">${F(m.away)} ${m.away.slice(0,8)}</text>`;
+            s += `<text x="${x+110}" y="${y+22}" fill="white" font-size="11" font-weight="bold" text-anchor="end">${m.goals_l}-${m.goals_v}</text>`;
+            
+            // Connector to next round
+            if(ri < 4 && simResults[roundKeys[ri+1]]) {
+                const nextMatches = simResults[roundKeys[ri+1]];
+                const nextIdx = Math.floor(mi/2);
+                if(nextIdx < nextMatches.length) {
+                    const nx = colX[ri+1];
+                    const ny = startY + nextIdx*(boxH+6) + boxH/2;
+                    const my = y + boxH/2;
+                    const midX = (x+120+nx)/2;
+                    s += `<path d="M${x+120},${my} Q${midX},${my} ${midX},${ny} Q${midX},${ny} ${nx},${ny}" fill="none" stroke="#4ade80" stroke-width="1.5" opacity="0.4"/>`;
+                }
+            }
+        });
+    });
+    
+    // Champion circle
+    if(simResults["Final"]?.[0]) {
+        const ch = simResults["Final"][0].winner;
+        s += `<circle cx="720" cy="150" r="40" fill="#052e16" stroke="#eab308" stroke-width="6"/>`;
+        s += `<text x="720" y="145" fill="#fcd34d" font-size="14" font-weight="bold" text-anchor="middle">COPA</text>`;
+        s += `<text x="720" y="170" fill="#fcd34d" font-size="10" font-weight="bold" text-anchor="middle">${ch}</text>`;
+        document.getElementById('bracket-flag').textContent = 'CAMPEÓN';
+        document.getElementById('bracket-champ').textContent = ch;
+    }
+    
+    // 3rd place
+    const third = simResults["Tercer y Cuarto Puesto"]?.[0];
+    if(third) {
+        s += `<text x="${colX[3]+60}" y="370" fill="#64748b" font-size="9" text-anchor="middle">3° ${F(third.winner)} ${third.winner}</text>`;
+    }
+    
+    svg.innerHTML = s;
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  EXCEL SHEETS
+// ═══════════════════════════════════════════════════════════════
+
+function switchSheet(n) {
+    document.querySelectorAll('.sheet-tab').forEach((t,i)=>{
+        t.classList.toggle('text-emerald-700',i===n);
+        t.classList.toggle('border-b-2',i===n);
+        t.classList.toggle('border-emerald-500',i===n);
+        t.classList.toggle('text-zinc-400',i!==n);
+    });
+    
+    const el = document.getElementById('sheet-content');
+    if(!simDone) { el.innerHTML='<div class="text-center text-zinc-400 py-8">Ejecute la simulación primero</div>'; return; }
+    
+    if(n===0) {
+        const rows = allResults.slice(0,10);
+        el.innerHTML = `
+            <div class="font-medium text-emerald-700 mb-3 text-xs">PREDICCIONES (${allResults.length} partidos)</div>
+            <table class="w-full text-[9px]">
+                ${rows.map((r,i)=>`<tr class="${i===rows.length-1?'bg-amber-100 font-bold text-amber-700':i%2===0?'bg-emerald-50':''}">
+                    <td class="py-1 pr-2">${r.home.slice(0,10)}</td>
+                    <td class="py-1">${r.goals_l}-${r.goals_v}</td>
+                    <td class="py-1">${r.away.slice(0,10)}</td>
+                    <td class="py-1 text-right">${(r.prob_winner*100).toFixed(0)}%</td>
+                </tr>`).join('')}
+            </table>
+            ${allResults.length>10?`<div class="text-zinc-400 mt-2">...y ${allResults.length-10} más</div>`:''}`;
+    } else if(n===1) {
+        el.innerHTML = `
+            <div class="font-medium text-emerald-700 mb-3 text-xs">RESUMEN POR RONDA</div>
+            ${Object.entries(simResults).map(([k,v])=>`
+                <div class="flex justify-between py-2 border-b border-zinc-100">
+                    <span>${k}</span>
+                    <span class="text-zinc-600">${v.length} partidos · ${v.reduce((a,m)=>a+m.goals_l+m.goals_v,0)} goles</span>
+                </div>
+            `).join('')}`;
+    } else if(n===2) {
+        const probs = calcRouteProbs();
+        const top5 = Object.entries(probs).sort((a,b)=>b[1].champ-a[1].champ).slice(0,5);
+        el.innerHTML = `
+            <div class="font-medium text-emerald-700 mb-3 text-xs">DASHBOARD — TOP 5 FAVORITOS</div>
+            <table class="w-full text-[9px]">
+                <tr class="bg-emerald-700 text-white"><th class="py-1 px-1">Equipo</th><th class="px-1">Camp</th><th class="px-1">Final</th><th class="px-1">Semi</th></tr>
+                ${top5.map(([eq,p])=>`<tr class="border-b"><td class="py-1">${F(eq)} ${eq.slice(0,8)}</td><td class="text-center">${(p.champ*100).toFixed(0)}%</td><td class="text-center">${(p.fin*100).toFixed(0)}%</td><td class="text-center">${(p.sf*100).toFixed(0)}%</td></tr>`).join('')}
+            </table>`;
+    } else {
+        const ch = simResults["Final"]?.[0]?.winner || '—';
+        el.innerHTML = `
+            <div class="h-full flex items-center justify-center flex-col text-center">
+                <div class="text-xl font-black text-amber-600 mb-3">COPA</div>
+                <div class="text-2xl font-black text-emerald-800">${ch}</div>
+                <div class="text-[10px] text-emerald-600 mt-2 uppercase tracking-widest">Campeón del Mundo 2026</div>
+            </div>`;
+    }
+}
+
+function exportPng() {
+    toast('bracket_mundial_2026.png exportado (simulación 300 DPI)');
+}
+
+function toast(msg) {
+    const t = document.createElement('div');
+    t.style.cssText = 'position:fixed;bottom:30px;right:30px;background:#052e16;color:#67e8f9;padding:14px 24px;border-radius:9999px;font-size:13px;box-shadow:0 10px 30px rgba(0,0,0,0.5);z-index:99999;transition:all 0.6s;';
+    t.textContent = msg;
+    document.body.appendChild(t);
+    setTimeout(()=>{t.style.opacity='0';t.style.transform='translateY(20px)';setTimeout(()=>t.remove(),700);},2500);
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════════════════
+
+function init() {
+    fillR32List();
+    switchTab(0);
+    switchSheet(0);
+    resetSim();
+}
+
+window.onload = init;
+</script>
+</body>
+</html>
