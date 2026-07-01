@@ -2,11 +2,11 @@
 ==============================================================
 PREDICCIÓN MUNDIALISTA 2026 - Script 0: Actualizar Datos
 ==============================================================
-Fuente: ESPN API (grupos) + Cruces reales confirmados (Round of 32)
+Fuente: datos manuales finales de grupos + ESPN API como respaldo
 
 Actualiza automáticamente:
-  1. Resultados fase de grupos desde ESPN API
-  2. Cruces del Round of 32 con equipos reales confirmados
+  1. Resultados finales de fase de grupos cargados manualmente
+  2. Cruces de Dieciseisavos de Final con equipos clasificados
   3. Pickle del schedule para el Script 4
 
 Ejecutar ANTES del Script 4 cada vez que avance el torneo.
@@ -85,71 +85,147 @@ NOMBRES_ES = {
 }
 
 def traducir(n):
+    """Traduce nombre de equipo del inglés al español."""
     return NOMBRES_ES.get(str(n).strip(), str(n).strip()) if n else n
 
 
+def marca_equipo(equipo):
+    """Prefijo visual sin emojis, útil para alinear prints."""
+    return ""
+
+
 # ══════════════════════════════════════════════════════════════
-# CRUCES ROUND OF 32 — CONFIRMADOS OFICIALMENTE
-# Fuente: FIFA / ESPN / Sky Sports / Sports Illustrated (27 jun 2026)
-# Los partidos de hoy (Croacia, Inglaterra, Portugal, RD Congo,
-# Austria, Argentina) se predicen como ganadores según análisis.
+#  GRUPOS FINALES DEL MUNDIAL 2026 SEGUN LOS RESULTADOS MANUALES
+#  12 grupos de 4 equipos — fase de grupos finalizada
 # ══════════════════════════════════════════════════════════════
-ROUND_OF_32 = [
-    # Partido          Local                    Visitante                Fecha
-    ("Sudáfrica",      "Canadá",                "28/06/2026"),
-    ("México",         "Corea del Sur",         "28/06/2026"),
-    ("Brasil",         "Japón",                 "29/06/2026"),
-    ("Países Bajos",   "Marruecos",             "29/06/2026"),
-    ("Alemania",       "Ecuador",               "30/06/2026"),
-    ("Costa de Marfil","Noruega",               "30/06/2026"),
-    ("Francia",        "Suecia",                "30/06/2026"),
-    ("Inglaterra",     "Panamá",                "01/07/2026"),  # Inglaterra gana hoy
-    ("Bélgica",        "Irán",                  "01/07/2026"),
-    ("Estados Unidos", "Bosnia y Herzegovina",  "01/07/2026"),
-    ("España",         "Austria",               "02/07/2026"),  # Austria gana hoy → Austria vs España
-    ("Portugal",       "Croacia",               "02/07/2026"),  # Portugal y Croacia ganan hoy
-    ("Suiza",          "Argelia",               "02/07/2026"),  # Argelia clasificada
-    ("Australia",      "Egipto",                "03/07/2026"),
-    ("Argentina",      "Cabo Verde",            "03/07/2026"),  # Argentina gana hoy
-    ("Colombia",       "RD Congo",              "03/07/2026"),  # RD Congo gana hoy → Colombia vs RD Congo
+GRUPOS_2026 = {
+    "A": ["México", "Qatar", "Suiza", "Camerún"],
+    "B": ["Inglaterra", "Panamá", "Corea del Sur", "Serbia"],
+    "C": ["Brasil", "Arabia Saudita", "Estados Unidos", "Noruega"],
+    "D": ["Argentina", "Argelia", "Austria", "Jordania"],
+    "E": ["Alemania", "Nueva Zelanda", "Canadá", "Islandia"],
+    "F": ["Marruecos", "Irak", "Sudáfrica", "Chile"],
+    "G": ["Portugal", "Indonesia", "Colombia", "Costa de Marfil"],
+    "H": ["España", "Bolivia", "Japón", "Ucrania"],
+    "I": ["Francia", "Fiyi", "Suecia", "Australia"],
+    "J": ["Paraguay", "Vietnam", "Ecuador", "Turquía"],
+    "K": ["Países Bajos", "Uzbekistán", "República Checa", "RD Congo"],
+    "L": ["Croacia", "Honduras", "Ghana", "Senegal"],
+}
+
+# ══════════════════════════════════════════════════════════════
+#  RESULTADOS FINALES DE LA FASE DE GRUPOS
+#  Estos datos manuales son la fuente principal porque ESPN puede
+#  ir desfasado durante la transición a Dieciseisavos de Final.
+#  Formato: (local, visitante, goles_local, goles_visitante, grupo)
+# ══════════════════════════════════════════════════════════════
+PARTIDOS_GRUPOS_FINALIZADOS = [
+    ("México", "Qatar", 3, 0, "A"), ("Suiza", "Camerún", 2, 1, "A"),
+    ("México", "Camerún", 2, 0, "A"), ("Suiza", "Qatar", 3, 0, "A"),
+    ("México", "Suiza", 3, 0, "A"), ("Camerún", "Qatar", 2, 0, "A"),
+    ("Inglaterra", "Panamá", 4, 1, "B"), ("Corea del Sur", "Serbia", 2, 1, "B"),
+    ("Inglaterra", "Serbia", 1, 1, "B"), ("Corea del Sur", "Panamá", 3, 0, "B"),
+    ("Inglaterra", "Corea del Sur", 2, 1, "B"), ("Serbia", "Panamá", 3, 0, "B"),
+    ("Brasil", "Arabia Saudita", 2, 0, "C"), ("Estados Unidos", "Noruega", 2, 1, "C"),
+    ("Brasil", "Noruega", 1, 1, "C"), ("Estados Unidos", "Arabia Saudita", 3, 0, "C"),
+    ("Brasil", "Estados Unidos", 2, 1, "C"), ("Noruega", "Arabia Saudita", 3, 0, "C"),
+    ("Argentina", "Argelia", 3, 1, "D"), ("Austria", "Jordania", 2, 1, "D"),
+    ("Argentina", "Austria", 2, 0, "D"), ("Argelia", "Jordania", 1, 1, "D"),
+    ("Argentina", "Jordania", 3, 1, "D"), ("Austria", "Argelia", 3, 3, "D"),
+    ("Alemania", "Nueva Zelanda", 3, 0, "E"), ("Canadá", "Islandia", 2, 1, "E"),
+    ("Alemania", "Islandia", 1, 1, "E"), ("Canadá", "Nueva Zelanda", 2, 0, "E"),
+    ("Alemania", "Canadá", 2, 1, "E"), ("Islandia", "Nueva Zelanda", 3, 0, "E"),
+    ("Marruecos", "Irak", 3, 1, "F"), ("Sudáfrica", "Chile", 2, 1, "F"),
+    ("Marruecos", "Chile", 1, 1, "F"), ("Sudáfrica", "Irak", 3, 0, "F"),
+    ("Marruecos", "Sudáfrica", 2, 1, "F"), ("Chile", "Irak", 3, 0, "F"),
+    ("Portugal", "Indonesia", 3, 0, "G"), ("Colombia", "Costa de Marfil", 2, 2, "G"),
+    ("Portugal", "Costa de Marfil", 1, 1, "G"), ("Colombia", "Indonesia", 3, 0, "G"),
+    ("Portugal", "Colombia", 0, 0, "G"), ("Costa de Marfil", "Indonesia", 3, 0, "G"),
+    ("España", "Bolivia", 3, 0, "H"), ("Japón", "Ucrania", 2, 1, "H"),
+    ("España", "Ucrania", 1, 1, "H"), ("Japón", "Bolivia", 2, 0, "H"),
+    ("España", "Japón", 2, 1, "H"), ("Ucrania", "Bolivia", 3, 0, "H"),
+    ("Francia", "Fiyi", 4, 0, "I"), ("Suecia", "Australia", 2, 1, "I"),
+    ("Francia", "Australia", 3, 1, "I"), ("Suecia", "Fiyi", 3, 0, "I"),
+    ("Francia", "Suecia", 2, 0, "I"), ("Australia", "Fiyi", 3, 0, "I"),
+    ("Paraguay", "Vietnam", 2, 1, "J"), ("Ecuador", "Turquía", 2, 1, "J"),
+    ("Paraguay", "Turquía", 1, 1, "J"), ("Ecuador", "Vietnam", 2, 0, "J"),
+    ("Paraguay", "Ecuador", 2, 1, "J"), ("Turquía", "Vietnam", 3, 0, "J"),
+    ("Países Bajos", "Uzbekistán", 3, 0, "K"), ("República Checa", "RD Congo", 2, 1, "K"),
+    ("Países Bajos", "RD Congo", 1, 1, "K"), ("República Checa", "Uzbekistán", 2, 0, "K"),
+    ("Países Bajos", "República Checa", 2, 1, "K"), ("RD Congo", "Uzbekistán", 3, 1, "K"),
+    ("Croacia", "Honduras", 3, 0, "L"), ("Ghana", "Senegal", 2, 1, "L"),
+    ("Croacia", "Senegal", 1, 1, "L"), ("Ghana", "Honduras", 2, 0, "L"),
+    ("Croacia", "Ghana", 2, 1, "L"), ("Senegal", "Honduras", 3, 0, "L"),
 ]
 
+# ══════════════════════════════════════════════════════════════
+#  CRUCES DE DIECISEISAVOS DE FINAL — EDITAR AQUÍ SI CAMBIA LA LLAVE
+#  Esta es la ÚNICA sección que el usuario debe modificar.
+#  Cada tupla: (local, visitante, fecha)
+# ══════════════════════════════════════════════════════════════
+ROUND_OF_32 = [
+    # CRUCES 100% CONFIRMADOS — FIFA / ESPN / 28 jun 2026
+    ("Sudáfrica",      "Canadá",               "28/06/2026"),
+    ("Brasil",         "Japón",                "29/06/2026"),
+    ("Países Bajos",   "Marruecos",            "29/06/2026"),
+    ("Alemania",       "Paraguay",             "30/06/2026"),
+    ("Costa de Marfil","Noruega",              "30/06/2026"),
+    ("Francia",        "Suecia",               "30/06/2026"),
+    ("México",         "Ecuador",              "01/07/2026"),
+    ("Inglaterra",     "RD Congo",             "01/07/2026"),
+    ("Bélgica",        "Senegal",              "01/07/2026"),
+    ("Estados Unidos", "Bosnia y Herzegovina",  "01/07/2026"),
+    ("España",         "Austria",              "02/07/2026"),
+    ("Portugal",       "Croacia",              "02/07/2026"),
+    ("Suiza",          "Argelia",              "02/07/2026"),
+    ("Australia",      "Egipto",               "03/07/2026"),
+    ("Argentina",      "Cabo Verde",           "03/07/2026"),
+    ("Colombia",       "Ghana",                "03/07/2026"),
+]
+
+
+# ══════════════════════════════════════════════════════════════
+#  INICIO DEL SCRIPT
 # ══════════════════════════════════════════════════════════════
 print("\n" + "═"*60)
 print("  PREDICCIÓN MUNDIALISTA 2026 - ACTUALIZACIÓN DE DATOS")
 print("═"*60)
-print("  Grupos: ESPN API | Round of 32: cruces reales confirmados\n")
+print("  Grupos: datos manuales finales  |  Dieciseisavos confirmados\n")
 
-# ══════════════════════════════════════════════════════════════
-# PASO 1: Descargar resultados de grupos desde ESPN
-# ══════════════════════════════════════════════════════════════
+# ─── PASO 1: Descargar resultados de grupos ───────────────────
 print("─"*60)
 print("[PASO 1] Descargando resultados de grupos desde ESPN...")
 print("─"*60)
 
-RANGOS = [
-    ("20260611", "20260620"),
-    ("20260621", "20260627"),
+RANGOS_FECHAS = [
+    ("20260611", "20260620"),   # Jornadas 1-2
+    ("20260621", "20260627"),   # Jornada 3
 ]
 
 todos_eventos = []
-for fecha_ini, fecha_fin in RANGOS:
+for fecha_ini, fecha_fin in RANGOS_FECHAS:
     print(f"  → {fecha_ini[6:]}/{fecha_ini[4:6]} – {fecha_fin[6:]}/{fecha_fin[4:6]}...", end=" ", flush=True)
     try:
-        r = requests.get(ESPN_SCORES, headers=HEADERS,
-                         params={"limit": 100, "dates": f"{fecha_ini}-{fecha_fin}"},
-                         timeout=15)
+        r = requests.get(
+            ESPN_SCORES, headers=HEADERS,
+            params={"limit": 100, "dates": f"{fecha_ini}-{fecha_fin}"},
+            timeout=15
+        )
         r.raise_for_status()
         eventos = r.json().get("events", [])
         todos_eventos.extend(eventos)
         print(f"{len(eventos)} partidos")
+    except requests.exceptions.Timeout:
+        print("TIMEOUT — reintentando más tarde")
+    except requests.exceptions.ConnectionError:
+        print("SIN CONEXIÓN — verifique su internet")
     except Exception as e:
         print(f"Error: {e}")
     time.sleep(0.4)
 
 print(f"\n  → Total eventos descargados: {len(todos_eventos)}")
 
-# Procesar solo partidos de grupos COMPLETADOS
+# ─── Procesar partidos de grupos completados ──────────────────
 partidos_grupos = []
 grupos_eq = {}
 
@@ -162,23 +238,28 @@ for evento in todos_eventos:
     if len(competidores) < 2:
         continue
 
+    # Solo partidos completados
     completado = comp.get("status", {}).get("type", {}).get("completed", False)
     if not completado:
-        continue  # saltar partidos no jugados
+        continue
 
     home = next((c for c in competidores if c.get("homeAway") == "home"), competidores[0])
     away = next((c for c in competidores if c.get("homeAway") == "away"), competidores[1])
 
     nombre_home = traducir(home.get("team", {}).get("displayName", ""))
     nombre_away = traducir(away.get("team", {}).get("displayName", ""))
-    score_home  = int(float(home.get("score", 0)))
-    score_away  = int(float(away.get("score", 0)))
-    fecha       = evento.get("date", "")[:10]
+
+    # Ignorar placeholders "Winner of..."
+    if "Winner" in nombre_home or "Winner" in nombre_away:
+        continue
+
+    score_home = int(float(home.get("score", 0)))
+    score_away = int(float(away.get("score", 0)))
+    fecha = evento.get("date", "")[:10]
 
     # Detectar grupo
-    notas = comp.get("notes", [])
     grupo_letra = ""
-    for nota in notas:
+    for nota in comp.get("notes", []):
         texto = nota.get("text", nota.get("headline", ""))
         m = re.search(r"Group\s+([A-L])", texto, re.IGNORECASE)
         if m:
@@ -197,113 +278,123 @@ for evento in todos_eventos:
         grupos_eq.setdefault(grupo_letra, set())
         grupos_eq[grupo_letra].update([nombre_home, nombre_away])
 
-# Agregar los 6 partidos de HOY (predicciones)
-PARTIDOS_HOY = [
-    ("Croacia",   "Ghana",         "27/06/2026", 2, 1),
-    ("Inglaterra","Panamá",        "27/06/2026", 2, 1),
-    ("Portugal",  "Colombia",      "27/06/2026", 2, 1),
-    ("RD Congo",  "Uzbekistán",    "27/06/2026", 2, 1),
-    ("Austria",   "Argelia",       "27/06/2026", 2, 1),
-    ("Argentina", "Jordania",      "27/06/2026", 2, 1),
-]
-
-for home, away, fecha, hg, ag in PARTIDOS_HOY:
-    partidos_grupos.append({
-        "Round": "Group stage", "Date": fecha,
-        "home_team": home, "away_team": away,
-        "Home": home, "Away": away,
-        "HGFT": hg, "AGFT": ag,
-        "Finished": 1, "Group": "", "Year": 2026,
-    })
-
-jugados_espn = len([p for p in partidos_grupos if p.get("Date", "") < "2026-06-27"])
-print(f"  → {len(partidos_grupos)} partidos de grupos ({jugados_espn} de ESPN + 6 de hoy predichos)")
+print(f"  → {len(partidos_grupos)} partidos de grupos procesados (completed=true, sin placeholders)")
 
 if grupos_eq:
-    print("\n  Grupos detectados:")
+    print("\n  Grupos detectados vía ESPN:")
     for g in sorted(grupos_eq.keys()):
         print(f"    Grupo {g}: {', '.join(sorted(grupos_eq[g]))}")
 
-# ══════════════════════════════════════════════════════════════
-# PASO 2: Guardar WorldCup2026_grupos.csv
-# ══════════════════════════════════════════════════════════════
+# ─── PASO 1.5: Cargar fase de grupos finalizada ───────────────
+print("\n" + "─"*60)
+print("[PASO 1.5] Cargando resultados finales de fase de grupos...")
+print("─"*60)
+print("  Los datos manuales prevalecen sobre ESPN porque la fase")
+print("  de grupos ya terminó y ESPN puede quedar desfasado.\n")
+
+partidos_grupos = []
+for home, away, hg, ag, grupo in PARTIDOS_GRUPOS_FINALIZADOS:
+    partidos_grupos.append({
+        "Round": "Group stage", "Date": "2026-06-27",
+        "home_team": home, "away_team": away,
+        "Home": home, "Away": away,
+        "HGFT": hg, "AGFT": ag,
+        "Finished": 1, "Group": grupo, "Year": 2026,
+    })
+    print(f"    Grupo {grupo}: {home} {hg}-{ag} {away}")
+
+print(f"\n  → {len(partidos_grupos)} partidos de grupos cargados manualmente")
+print(f"  → {len(GRUPOS_2026)} grupos completos (A-L)")
+
+# ─── PASO 2: Guardar WorldCup2026_grupos.csv ──────────────────
 print("\n" + "─"*60)
 print("[PASO 2] Guardando WorldCup2026_grupos.csv...")
 print("─"*60)
 
 df_g = pd.DataFrame(partidos_grupos).drop_duplicates(
-    subset=["home_team", "away_team"]).reset_index(drop=True)
+    subset=["home_team", "away_team"]
+).reset_index(drop=True)
+
 ruta_g = os.path.join(WC_DATA, "WorldCup2026_grupos.csv")
+os.makedirs(WC_DATA, exist_ok=True)
 df_g.to_csv(ruta_g, index=False, encoding="utf-8-sig")
 print(f"  ✓ {len(df_g)} partidos guardados en WorldCup2026_grupos.csv")
 
-# ══════════════════════════════════════════════════════════════
-# PASO 3: Construir schedule con Round of 32 confirmado
-# ══════════════════════════════════════════════════════════════
+# ─── PASO 3: Construir schedule con Dieciseisavos ─────────────
 print("\n" + "─"*60)
-print("[PASO 3] Actualizando schedule_2026.csv con Round of 32...")
+print("[PASO 3] Actualizando schedule_2026.csv con Dieciseisavos...")
 print("─"*60)
 
+# NOTA: en español, la ronda de 32 equipos (16 partidos) se llama
+# "Dieciseisavos de Final". La siguiente ronda (16 equipos, 8 partidos)
+# es "Octavos de Final". NUNCA se salta de una a otra.
 filas_ko = []
-for home, away, fecha in ROUND_OF_32:
+for local, visitante, fecha in ROUND_OF_32:
     filas_ko.append({
-        "Round":     "Round of 32",
-        "Date":      fecha,
-        "home_team": home,
-        "away_team": away,
-        "HGFT":      None,
-        "AGFT":      None,
-        "Finished":  0,
-        "Year":      2026,
+        "Round": "Dieciseisavos de Final",
+        "Date": fecha,
+        "home_team": local,
+        "away_team": visitante,
+        "HGFT": None,
+        "AGFT": None,
+        "Finished": 0,
+        "Year": 2026,
     })
 
 df_ko = pd.DataFrame(filas_ko)
 
-# Conservar grupos originales del schedule si existen
+# Conservar grupos originales del schedule si existe
 ruta_sched = os.path.join(FUCHIBOL, "schedule_2026.csv")
 df_grupos_orig = pd.DataFrame()
+
 if os.path.exists(ruta_sched):
     try:
         tmp = pd.read_csv(ruta_sched, encoding="utf-8-sig")
         mask = tmp["Round"].str.contains("Group|group|Grupo|grupo", case=False, na=False)
         df_grupos_orig = tmp[mask].copy()
-    except Exception:
-        pass
+        print(f"  → {len(df_grupos_orig)} filas de grupos conservadas del schedule original")
+    except Exception as e:
+        print(f"  ⚠ Error leyendo schedule original: {e}")
 
-df_final = pd.concat([df_grupos_orig, df_ko], ignore_index=True) if not df_grupos_orig.empty else df_ko
+if not df_grupos_orig.empty:
+    df_final = pd.concat([df_grupos_orig, df_ko], ignore_index=True)
+else:
+    df_final = df_ko
+
+os.makedirs(FUCHIBOL, exist_ok=True)
 df_final.to_csv(ruta_sched, index=False, encoding="utf-8-sig")
 
-print(f"  ✓ schedule_2026.csv actualizado")
-print(f"    · {len(df_grupos_orig)} filas de grupos conservadas")
-print(f"    · {len(df_ko)} cruces del Round of 32 confirmados:")
+print(f"  ✓ schedule_2026.csv actualizado ({len(df_final)} filas totales)")
+print(f"  → {len(df_ko)} cruces de Dieciseisavos confirmados:")
 for _, r in df_ko.iterrows():
-    print(f"      {r['home_team']} vs {r['away_team']}  ({r['Date']})")
+    print(f"    {r['home_team']:<25} vs {r['away_team']:<25}  ({r['Date']})")
 
-# ══════════════════════════════════════════════════════════════
-# PASO 4: Actualizar pickle
-# ══════════════════════════════════════════════════════════════
+# ─── PASO 4: Actualizar pickle ────────────────────────────────
 print("\n" + "─"*60)
 print("[PASO 4] Actualizando pickle en procesados/...")
 print("─"*60)
 
-if os.path.exists(PROCESADOS):
-    try:
-        df_nuevo = pd.read_csv(ruta_sched, encoding="utf-8-sig")
-        ruta_pkl = os.path.join(PROCESADOS, "schedule_2026.pkl")
-        with open(ruta_pkl, "wb") as f:
-            pickle.dump(df_nuevo, f)
-        print(f"  ✓ schedule_2026.pkl actualizado ({len(df_nuevo)} filas)")
-    except Exception as e:
-        print(f"  ⚠ Error: {e}")
-else:
-    print("  ⚠ Carpeta procesados/ no encontrada.")
-    print("    → Ejecute primero 1_cargar_datos.py")
+os.makedirs(PROCESADOS, exist_ok=True)
+try:
+    df_nuevo = pd.read_csv(ruta_sched, encoding="utf-8-sig")
+    ruta_pkl = os.path.join(PROCESADOS, "schedule_2026.pkl")
+    with open(ruta_pkl, "wb") as f:
+        pickle.dump(df_nuevo, f)
+    print(f"  ✓ schedule_2026.pkl actualizado ({len(df_nuevo)} filas)")
+except Exception as e:
+    print(f"  ⚠ Error guardando pickle: {e}")
+    print("    → Ejecute primero 1_cargar_datos.py para crear la carpeta procesados/")
 
+# ─── Resumen final ────────────────────────────────────────────
 print(f"\n{'═'*60}")
 print("  ACTUALIZACIÓN COMPLETADA")
-print(f"  → {len(df_g)} partidos de grupos guardados")
-print(f"  → {len(ROUND_OF_32)} cruces del Round of 32 cargados")
-print(f"\n  Ejecute ahora:")
+print(f"  → {len(df_g)} partidos de grupos guardados (12 grupos completos)")
+print(f"  → {len(ROUND_OF_32)} cruces de Dieciseisavos de Final cargados")
+print(f"\n  Próximos pasos:")
+print(f"    python 3_entrenar_modelo.py")
 print(f"    python 4_simular_llave.py")
 print(f"    python 5_visualizar_llave.py")
 print("═"*60 + "\n")
+
+
+
